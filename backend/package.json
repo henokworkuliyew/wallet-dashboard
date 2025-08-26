@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "YaYa Wallet Dashboard Backend",
   "main": "dist/server.js",
-  "type": "module",
+  "type": "module", 
   "scripts": {
     "dev": "nodemon --watch src --ext ts,json --exec node --loader ts-node/esm src/server.ts",
-    "build": "tsc && node -e \"require('fs').copyFileSync('src/generateSignature.js', 'dist/generateSignature.js')\" && node -e \"require('fs').copyFileSync('src/generateSignaturePost.js', 'dist/generateSignaturePost.js')\"",
+    "build": "tsc && echo 'Build output:' && ls -la dist || echo 'Build directory empty'",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1"
