@@ -1,19 +1,7 @@
 import cors from 'cors'
-import helmet from 'helmet'
-import type { Express } from 'express'
-import { env } from '../config/env.js'
+import express, { Express } from 'express'
 
-export function applySecurity(app: Express) {
-  app.use(
-    helmet({
-      contentSecurityPolicy: false, // SPA assets
-    })
-  )
-
-  app.use(
-    cors({
-      origin: env.allowedOrigin,
-      credentials: false,
-    })
-  )
+export const applySecurity = (app: Express) => {
+  app.use(cors())
+  app.use(express.json())
 }
