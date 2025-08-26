@@ -1,24 +1,14 @@
-import express from 'express';
-import morgan from 'morgan';
-import { applySecurity } from './middleware/security.js';
-import { apiLimiter } from './middleware/rateLimit.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import transactions from './routes/transactions.js';
+import express, { Express } from 'express'
+import { applySecurity } from './middleware/security'
+import { errorHandler } from './middleware/errorHandler'
+import { rateLimit } from './middleware/rateLimit'
+import transactionsRouter from './routes/transactions'
 
+const app: Express = express()
 
-export function createApp() {
-const app = express();
-applySecurity(app);
+applySecurity(app)
+app.use(rateLimit)
+app.use('/api', transactionsRouter)
+app.use(errorHandler)
 
-
-app.use(express.json({ limit: '100kb' }));
-app.use(morgan('dev'));
-
-
-app.get('/health', (_req, res) => res.json({ ok: true }));
-app.use('/api/transactions', apiLimiter, transactions);
-
-
-app.use(errorHandler);
-return app;
-}
+export default app
