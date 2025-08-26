@@ -1,27 +1,16 @@
-export type Transaction = {
-  id: string
-  sender: string
-  receiver: string
-  amount: number
-  currency: string
-  cause: string
-  createdAt: string // ISO string
+export interface ServerTimeResponse {
+  time?: number
+  timestamp?: number
+  data?: { timestamp?: number }
 }
 
-export type UpstreamTransaction = {
-  id: string
-  sender: string
-  receiver: string
-  amount: number
-  currency: string
-  cause: string
-  createdAt: string
+export interface Transaction {
+  sender: any
+  receiver: any
+  [key: string]: any
 }
 
-export type Paginated<T> = {
-  data: T[]
-  page: number
-  pageSize: number
-  totalPages: number
-  total: number
+export interface ApiResponse {
+  data: Transaction[]
+  [key: string]: any
 }
