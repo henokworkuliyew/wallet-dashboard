@@ -11,6 +11,6 @@
     "rootDir": "./src",
     "sourceMap": true
   },
-  "include": ["src/**/*", "generateSignature.js", "generateSignaturePost.js"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
