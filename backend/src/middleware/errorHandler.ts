@@ -1,16 +1,11 @@
-import type { NextFunction, Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 
-export function errorHandler(
+export const errorHandler = (
   err: any,
-  _req: Request,
+  req: Request,
   res: Response,
-  _next: NextFunction
-) {
-  const status = err?.status || 500
-  const message = err?.message || 'Internal Server Error'
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.error(err)
-  }
-  res.status(status).json({ error: message })
+  next: NextFunction
+) => {
+  console.error('API Error:', err.response?.data || err.message)
+  res.status(err.response?.status || 500).json({ error: err.message })
 }
