@@ -1,28 +1,29 @@
-import { useState, useEffect } from 'react'
+
+import { useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-export function useSearchParam(
+export const useSearchParam = (
   key: string,
-  defaultValue = ''
-): [string, (value: string) => void] {
+  defaultValue: string
+): [string, (value: string) => void] => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [value, setValue] = useState(
     () => searchParams.get(key) || defaultValue
   )
 
-  useEffect(() => {
-    const paramValue = searchParams.get(key) || defaultValue
-    setValue(paramValue)
-  }, [searchParams, key, defaultValue])
+  const setParam = useCallback(
+    (newValue: string) => {
+      setValue(newValue)
+      const newSearchParams = new URLSearchParams(searchParams)
+      if (newValue === defaultValue || newValue === '') {
+        newSearchParams.delete(key)
+      } else {
+        newSearchParams.set(key, newValue)
+      }
+      setSearchParams(newSearchParams)
+    },
+    [key, defaultValue, searchParams, setSearchParams]
+  )
 
-  const updateValue = (newValue: string) => {
-    if (newValue) {
-      searchParams.set(key, newValue)
-    } else {
-      searchParams.delete(key)
-    }
-    setSearchParams(searchParams)
-  }
-
-  return [value, updateValue]
+  return [value, setParam]
 }
