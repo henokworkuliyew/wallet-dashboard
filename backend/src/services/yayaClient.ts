@@ -1,83 +1,41 @@
-import { http, generateSignature, getTimestamp } from '../utils/http.js'
-import { env } from '../config/env.js'
-import type { Paginated, UpstreamTransaction } from '../types/transactions.js'
+import axios, { AxiosResponse } from 'axios'
+import crypto from 'crypto'
+import { ServerTimeResponse } from '../types/transactions'
+import { API_SECRET, BASE_URL } from '../config/env'
 
-export async function findByUser(
-  page = 1
-): Promise<Paginated<UpstreamTransaction>> {
-  try {
-    const timestamp = getTimestamp()
-    const endpoint = '/transaction/find-by-user'
-    const body = '' // Empty for GET
-    const signature = generateSignature(
-      'GET',
-      endpoint,
-      body,
-      env.yaya.apiSecret,
-      timestamp
-    )
+export function generateSignature(
+  timestamp: string,
+  method: string,
+  endpoint: string,
+  body: string = ''
+): string {
+  const pathOnly: string = endpoint.split('?')[0]
+  const stringToSign: string =
+    timestamp + method.toUpperCase() + pathOnly + body
 
-    const { data } = await http.get(`${env.yaya.baseUrl}${endpoint}`, {
-      params: { p: page },
-      headers: {
-        'YAYA-API-KEY': env.yaya.apiKey,
-        'YAYA-API-TIMESTAMP': timestamp.toString(),
-        'YAYA-API-SIGN': signature,
-        'Content-Type': 'application/json',
-      },
-    })
-    return normalizePagination(data)
-  } catch (err) {
-    console.error('API Error:', err)
-    throw err // Let error handler deal with it
-  }
+  const signature: string = crypto
+    .createHmac('sha256', API_SECRET || '')
+    .update(stringToSign)
+    .digest('base64')
+
+  console.log('DEBUG AUTH:', {
+    timestamp,
+    method,
+    endpoint,
+    stringToSign,
+    apiKey: API_SECRET ? API_SECRET.slice(0, 10) + '...' : 'MISSING',
+    signature: signature.slice(0, 12) + '...',
+  })
+
+  return signature
 }
 
-export async function search(
-  query: string,
-  page = 1
-): Promise<Paginated<UpstreamTransaction>> {
-  try {
-    const timestamp = getTimestamp()
-    const endpoint = '/transaction/search'
-    const body = JSON.stringify({ query }) // JSON body for POST
-    const signature = generateSignature(
-      'POST',
-      endpoint,
-      body,
-      env.yaya.apiSecret,
-      timestamp
-    )
-
-    const { data } = await http.post(
-      `${env.yaya.baseUrl}${endpoint}`,
-      { query },
-      {
-        params: { p: page },
-        headers: {
-          'YAYA-API-KEY': env.yaya.apiKey,
-          'YAYA-API-TIMESTAMP': timestamp.toString(),
-          'YAYA-API-SIGN': signature,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    return normalizePagination(data)
-  } catch (err) {
-    console.error('API Error:', err)
-    throw err
-  }
-}
-
-function normalizePagination(data: any): Paginated<UpstreamTransaction> {
-  const pageSize = data.pageSize || 10 // Default page size if not provided by API
-  const total = data.total || 0
-  const totalPages = total > 0 ? Math.ceil(total / pageSize) : 1
-  return {
-    data: data.transactions || [],
-    page: data.page || 1,
-    pageSize,
-    totalPages,
-    total,
-  }
+export async function getServerTime(): Promise<string> {
+  const { data }: AxiosResponse<ServerTimeResponse> = await axios.get(
+    `${BASE_URL}/api/en/time`
+  )
+  const timestamp: number | undefined =
+    data.time || data.timestamp || data.data?.timestamp
+  if (!timestamp) throw new Error('No timestamp in response from YaYa server')
+  return timestamp.toString()
 }
