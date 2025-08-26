@@ -1,8 +1,5 @@
-import rateLimit from 'express-rate-limit'
+import { Request, Response, NextFunction } from 'express'
 
-export const apiLimiter = rateLimit({
-  windowMs: 60 * 1000, 
-  max: 120, 
-  standardHeaders: true,
-  legacyHeaders: false,
-})
+export const rateLimit = (req: Request, res: Response, next: NextFunction) => {
+  next()
+}
