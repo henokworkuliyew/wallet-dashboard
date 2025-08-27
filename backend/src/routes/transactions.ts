@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
-import { Transaction, ApiResponse } from '../types/transactions'
-import { generateSignature, getServerTime } from '../services/yayaClient'
-import { API_KEY, BASE_URL } from '../config/env'
+import { Transaction, ApiResponse } from '../types/transactions.js'
+import { generateSignature, getServerTime } from '../services/yayaClient.js'
+import { API_KEY, BASE_URL } from '../config/env.js'
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
 const router = Router()
