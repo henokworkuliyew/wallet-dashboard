@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import crypto from 'crypto'
-import { ServerTimeResponse } from '../types/transactions'
-import { API_SECRET, BASE_URL } from '../config/env'
+import { ServerTimeResponse } from '../types/transactions.js'
+import { API_SECRET, BASE_URL } from '../config/env.js'
 
 export function generateSignature(
   timestamp: string,
