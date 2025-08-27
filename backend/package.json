@@ -6,7 +6,7 @@
   "type": "module", 
   "scripts": {
     "dev": "nodemon --watch src --ext ts,json --exec node --loader ts-node/esm src/server.ts",
-    "build": "tsc && echo 'Build output:' && ls -la dist || echo 'Build directory empty'",
+    "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1"
