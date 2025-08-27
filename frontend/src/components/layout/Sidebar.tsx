@@ -90,7 +90,8 @@ const Sidebar: React.FC = () => {
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
             <h3 className="font-semibold text-sm">Need Help?</h3>
             <p className="text-xs opacity-90 mt-1">Contact our support team</p>
-            <button className="mt-2 text-xs bg-white/20 px-3 py-1 rounded-full hover:bg-white/30 transition-colors">
+            <button className="mt-2 text-xs bg-white/20 px-3 py-1 rounded-full hover:bg-white/30 transition-colors"
+              onClick={() => window.open('https://docs.yayawallet.com/', '_blank')}>
               Get Support
             </button>
           </div>
